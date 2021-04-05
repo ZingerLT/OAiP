@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <locale.h>
+#define N 10 //задан интервал-10 элементов
+int main(void)
+{
+	setlocale(LC_ALL, "Russian");
+	int A[N], B[N], i = 0, k, count = 0;
+	printf("Введите значения массива А:\n");
+	for (i = 0; i < N; i++)
+	{
+		printf("A[%d]=", i + 1);
+		while (scanf_s("%d", &A[i]) == 0)
+			rewind(stdin);
+	}
+		for (i = 0, k = 0; i<N; i++)
+		{
+			if (A[i] < 0)
+			{
+				B[k++] = A[i];
+				count += 1;
+			}
+		}
+		printf("\n Массив В равен: ");
+		for (i = 0; i < count; i++)
+			printf("\nB[%d]=%d\n", i + 1, B[i]);
+		return 0;
+	}
+
+
+//Задан массив A(10). Получить из него массив B, состоящий из элементов массива A, которые меньше 0.//
+#include <stdio.h> 
+#include <locale.h>
+#define N 10 //Задан интервал-10 элементов
+int main(void)
+{
+	setlocale(LC_ALL, "Russian");
+	int A[N], B[N], i = 0, k, count = 0;
+	printf("Введите значения массива А:\n"); // Ввод массива А с клавиатуры
+	for (i = 0; i < N; i++)                  // Цикл заполнения массива А
+	{
+		printf("A[%d]=", i + 1);
+		while (scanf_s("%d", &A[i]) == 0) // Проверка на корректный ввод
+			rewind(stdin);
+	}
+	for (i = 0, k = 0; i<N; i++) // Цикл заполнения массива В
+	{
+		if (A[i] < 0)    // Условие для заполнения массива В значениями меньше нуля
+		{
+			B[k++] = A[i];
+			count += 1;
+		}
+	}
+	printf("\n Массив В равен: ");
+	for (i = 0; i < count; i++)          // Вывод массива В
+		printf("\nB[%d]=%d\n", i + 1, B[i]);
+	return 0;
+}
