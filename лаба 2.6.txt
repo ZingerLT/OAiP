@@ -1,0 +1,203 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <conio.h>
+#include <windows.h>
+#include <ctype.h>
+struct dack
+{
+	int m;
+	dack *pr;
+	dack *nx;
+};
+int menu();
+void vvod(dack**, dack**, int&);
+void show1(dack*);
+void show2(dack*);
+void del(int,dack **, dack **);
+int main()
+{
+	int st = 0;
+	dack *t = NULL;
+	dack *h = NULL;
+	system("chcp 1251>0");
+	int razmer, f = 0, g;
+	int z = 0;
+	char b = 0;
+	do
+	{
+		printf("Размер Дэка:");
+		g = scanf_s("%d", &razmer);
+	} while (!g || razmer <= 0);
+	while (1)
+	{
+		switch (menu())
+		{
+		case '1':
+		{
+			system("cls");
+			if (f >= razmer)
+			{
+				printf("Дэк полон!\n");
+			}
+			if (z == 0 && f < razmer)
+			{
+				do
+				{
+					vvod(&h, &t, f);
+					z++;
+					f++;
+				} while (f < razmer);
+			}
+			system("pause");
+		}break;
+		case '2':
+		{
+			system("cls");
+			char u;
+			printf("С начала(1) или конца(2)?");
+			do
+			{
+				f = _getch();
+				printf("%c", f);
+			} while (f != '1' && f != '2');
+			switch (f)
+			{
+			case '1':
+				show1(h);
+				break;
+			case '2':
+				show2(t);
+				break;
+			}
+			system("pause");
+		}break;
+		case '3':
+		{
+			return 0;
+		}
+		case '4':
+		{
+			system("cls");
+			del(st,&h,&t);
+		}break;
+		default:
+		{
+			printf("Неверный ввод!");
+			rewind(stdin);
+		}
+		}
+	}
+	return 0;
+}
+int menu()
+{
+	int x;
+	printf("\n1-Добавить элемент.\n");
+	printf("2-Просмотр Дэка.\n");
+	printf("3-Завершение работы.\n");
+	printf("4-Режим работы.\n");
+	x = _getch();
+	printf("%c\n", x);
+	return x;
+}
+void vvod(dack **l, dack **s, int &temp)
+{
+	dack *r;
+	if (!(r = (dack*)calloc(1, sizeof(dack))))
+	{
+		printf("Ошибка выделения памяти!");
+		return;
+	}
+	printf("Введите символ:");
+	r->m = _getch();
+	printf("%c\n", r->m);
+	if (isdigit(r->m))
+	{
+		if (*l == NULL || *s == NULL)
+		{
+			*l = r;
+			*s = r;
+		}
+		else
+		{
+			r->pr = *s;
+			(*s)->nx = r;
+			*s = r;
+		}
+		printf("Значение добавлено в Дэк!\n");
+	}
+	else
+	{
+		printf("Неверный ввод!\n");
+	}
+}
+void show1(dack *l)
+{
+	if (!l)
+	{
+		printf("Дек пуст!");
+		return;
+	}
+	printf("Элементы Дэка:");
+	while (l)
+	{
+		printf("\t%c", l->m);
+		l = l->nx;
+	}
+	printf("\n");
+}
+void show2(dack *l)
+{
+	if (!l)
+	{
+		printf("Дек пуст!");
+		return;
+	}
+	printf("Элементы Дэка:");
+	while (l)
+	{
+		printf("\t%c", l->m);
+		l = l->pr;
+	}
+	printf("\n");
+}
+void del(int st, dack **l, dack **t)
+{
+	int k = 0;
+	dack *c;
+	dack *d;
+	if (!(d = (dack*)calloc(1, sizeof(dack))))
+	{
+		printf("Ошибка выделения памяти!");
+		return;
+	}
+	printf("Введите число:");
+	do
+	{
+		scanf_s("%c", &st);
+	} while (!isdigit(st));
+	
+	if (st == (*l)->m)
+		k = 1;
+	d->m = st;
+	c = *l;
+	*l = (*l)->nx;
+	((*l)->nx)->pr = *l;
+	free(c);
+	printf("Удалён первый элемент!\n");
+	
+	if (k == 1)
+	{
+		d->pr = *t;
+		(*t)->nx = d;
+		*t = d;
+		printf("Число добавлено справа!\n");
+	}
+	else 
+	{
+		d->nx = *l;
+		(*l)->pr = d;
+		*l = d;
+		printf("Число добавлено слева!\n");
+	}
+}

@@ -1,0 +1,92 @@
+/*В двоичном файле указан размер квадратной матрицы, а затем построчно записаны элементы матрицы целых чисел. 
+Таких групп данных в файле несколько. Вычислить сумму элементов, расположенных ниже главной диагонали. 
+Результат записать в конец файла. Имя файла задается в командной строке.*/
+#include <stdio.h>
+#include <windows.h>
+#define N 4
+#define T 3
+#define P 2
+int main()
+{
+	FILE *f;
+	char nameFile[200];
+	rewind(stdin);
+	gets_s(nameFile);
+	if (!(f = fopen(nameFile, "wb")))
+	{
+		printf("Error!");
+		rewind(stdin);
+		return 1;
+	}
+	
+	fprintf(f, "Matrix 1 is %d X %d\n", N, N);
+	fprintf(f, "Matrix 2 is %d X %d\n", T, T);
+	fprintf(f, "Matrix 3 is %d X %d\n", P, P);
+	int count = 0;
+	int a[N][N];
+	int b[T][T];
+	int c[P][P];
+	fprintf(f, "First Matrix:\n");
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			count++;
+			a[i][j] = count;
+			fprintf(f, "%4d", a[i][j]);
+		}
+		fprintf(f, "\n");
+	}
+	count = 0;
+	fprintf(f, "Second Matrix:\n");
+	for (int i = 0; i < T; i++)
+	{
+		for (int j = 0; j < T; j++)
+		{
+			count++;
+			b[i][j] = count;
+			fprintf(f, "%4d", b[i][j]);
+		}
+		fprintf(f, "\n");
+	}
+	count = 0;
+	fprintf(f, "Third Matrix:\n");
+	for (int i = 0; i < P; i++)
+	{
+		for (int j = 0; j < P; j++)
+		{
+			count++;
+			c[i][j] = count;
+			fprintf(f, "%4d", c[i][j]);
+		}
+		fprintf(f, "\n");
+	}
+	int sum1=0;
+	int sum2=0;
+	int sum3=0;
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			sum1 += a[i][j];
+		}
+	}
+	for (int i = 0; i < T; i++)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			sum2 += b[i][j];
+		}
+	}
+	for (int i = 0; i < P; i++)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			sum3 += c[i][j];
+		}
+	}
+	fprintf(f,"summa1=%d\n", sum1);
+	fprintf(f,"summa2=%d\n", sum2);
+	fprintf(f,"summa3=%d\n", sum3);
+	return 0;
+}

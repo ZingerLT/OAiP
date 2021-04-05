@@ -1,0 +1,52 @@
+/*Компоненты файла f – целые двухзначные числа. Получить файл g, образованный из f включением только чисел больше K*/
+#include <stdio.h>
+#include <locale.h>
+#include <conio.h>
+#include <string.h>
+#include <windows.h>
+#define LEN 200
+int main()
+{
+	setlocale(LC_ALL, "Russian");
+	FILE *f;
+	FILE *g;
+	int K;
+	int i;
+	if (!(f = fopen("E:\\new.txt", "w")) || !(g=fopen("E:\\ne_new.txt", "w")))
+	{
+		printf("Error!");
+		return 1;
+	}
+	printf("Введите К:");
+	scanf_s("%d", &K);
+	system("cls");
+	int* a;
+	a = (int*)malloc(sizeof(int));
+	fprintf(f,"исходный массивчик:");
+	for (i = 0; i < 10; i++)
+	{
+		printf("a[%d]= ", (i + 1));
+		scanf_s("%d", &a[i]);
+			if (a[i] < 9 || a[i] > 100)
+			{
+				printf("not this number\n");
+				fflush(stdin);
+				printf("a[%d]= ", (i + 1));
+				scanf_s("%d", &a[i]);
+				continue;
+			}
+		fprintf(f, "%5d", a[i]);
+	}
+	fclose(f);
+	fprintf(g, "K=%d\n", K);
+	fprintf(g,"полученный массивчик:");
+	for (i = 0; i < 10; i++)
+	{
+		if (a[i] > K)
+		{
+			fprintf(g, "%5d", a[i]);
+		}
+	}
+	fclose(g);
+	return 0;
+}

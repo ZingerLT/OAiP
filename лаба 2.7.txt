@@ -1,0 +1,215 @@
+/*Используя очередь или стек, найдите в непустом дереве Т длину(число ветвей) пути от корня до ближайшей вершины
+с элементом Е.Если такого элемента не обнаружено, то выдайте на экран соответствующее сообщение.*/
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <windows.h>
+struct tree//структура дерева
+{
+	int val;
+	tree* left, *right;
+};
+struct queue_elem//структура очереди
+{
+	int val;
+	queue_elem* next;
+};
+void create(tree** start);//создание корня
+tree* add(tree* start, tree* pointer);//добавление элементов в дерево
+void printf1(tree* start);//вывод дерева
+void way(tree* start, int n, queue_elem** start_queue, bool flag);//поиск пути
+void add_to_queue(queue_elem** start, int n);//добавление в очередь
+void remove1(queue_elem** start);//удаление из очереди
+int length_of_q(queue_elem* start);//длинна очереди
+void clean(queue_elem* start);//очистка очереди 
+int main()
+{
+	system("chcp 1251>0");
+	tree* start = nullptr;
+	int choice;
+	queue_elem* start_queue = nullptr;
+	int len = 0;
+	do
+	{
+		printf("\tВыберите действие:\n\t1-Добавить элемент\n\t2-Найти путь до элемента\n\t3-Вывод дерева\n\t0-Выход\n\t");
+		printf("Ваш выбор:");
+		scanf_s("%d", &choice);
+		switch (choice)
+		{
+		case 1:create(&start); break;//добавление элемента
+		case 2:
+			printf("Введите значение элемента\n");
+			int n;
+			scanf_s("%d", &n);
+			if (start == nullptr)//если в дереве нет элементов то нет смысла искать
+			{
+				printf("Таких элементов нет\n");
+				continue;
+			}
+			way(start, n, &start_queue, true); //поиск элемента
+			len = length_of_q(start_queue);//длинна оставшейся очереди==количество элементов до нужного
+			if ((len == 1 && start->val != n))//если остался 1 элемент то может быть такое что просто не существует нужных элементов
+			{
+				printf("Таких элементов нет\n");
+			}
+			else
+			{
+				printf("Расстояние:%d\n", len);//вывод пути
+			}
+			start_queue = nullptr; break;//путь
+		case 3:printf1(start); break;//вывод дерева
+		case 0:printf("Завершение работы!\n"); return 0; break;
+		default:printf("Я вас не понимаю(Введите еще раз)к\n");
+		}
+	} while (choice);
+}
+void create(tree** start)
+{
+	tree* pointer;
+	pointer = (tree*)malloc(1 * sizeof(tree));
+	pointer->left = nullptr;
+	pointer->right = nullptr;
+	printf("Введите значение:\n");
+	scanf_s("%d", &pointer->val);//создаю элемент дерева
+	if (*start == nullptr)
+	{
+		*start = pointer;//если дерево пустое то вношу его
+		return;
+	}
+	add(*start, pointer);//если не пустое то добавляю 
+}
+tree* add(tree* start, tree* pointer)
+{
+	if (start && pointer->val >= start->val)
+	{
+		start->right = add(start->right, pointer);//если значение больше текущего то ухожу вправо
+	}
+	else if (start && pointer->val < start->val)
+	{
+		start->left = add(start->left, pointer);//если меньше то влево
+	}
+	else if (!start)
+	{
+		start = pointer; //ушел в ноль то добавляю элемент 
+	}
+	return start;
+}
+void printf1(tree* start)
+{
+	if (!start)
+	{
+		printf("Узлов нет((\n");//вывод дерева на экран
+		return;
+	}
+	if (start->left)
+	{
+		printf1(start->left);//иду влево до упора
+	}
+	printf("%d ", start->val);//вывод
+	if (start->right)
+	{
+		printf1(start->right); //вправо до упора
+	}
+}
+void way(tree* start, int n, queue_elem** start_queue, bool flag)
+{
+	static bool del = false;
+	static bool is_find = false;
+	if (flag)//если функция вызвана только что(то есть не было рекуурсий то по умолчанию все ставлю false)
+	{
+		del = false;
+		is_find = false;
+	}
+	if (del == false && is_find == false) //если не надо ничего удалять и нужный элемент не найден то добавляю текущий в очередь
+	{
+		add_to_queue(start_queue, start->val);
+	}
+	if (start->val == n)//если нашел нужный то прекращаю добавление в очередь элементов
+	{
+		is_find = true;
+	}
+	if (start->left)
+	{
+		del = false;
+		way(start->left, n, start_queue, false);//иду влево до упора(как только происходит рекурсия назад последний элемент сразу удаляется из очереди)
+		del = true;
+	}
+	if (del == true && is_find == false)
+	{
+		remove1(start_queue);//удаление элементов из очереди
+	}
+	if (start->right)
+	{
+		del = false;
+		way(start->right, n, start_queue, false); //вправо до упора(как только происходит рекурсия назад последний элемент сразу удаляется из очереди)
+		del = true;
+	}
+	if (del == true && is_find == false)
+	{
+		remove1(start_queue);//удаление
+	}
+	if (start->right == nullptr && start->left == nullptr && is_find == false)
+	{
+		del = true;//если у элемента нет потомков то его можно удалить 
+	}
+	return;
+}
+void add_to_queue(queue_elem** queue_start, int val)
+{
+	queue_elem* pointer;
+	pointer = (queue_elem*)malloc(sizeof(queue_elem));
+	pointer->val = val;//записываю значение
+	pointer->next = nullptr;//следующий элемент 
+	queue_elem* memory = *queue_start;
+	queue_elem* pre_el = nullptr;
+	if (*queue_start == nullptr)
+	{
+		*queue_start = pointer; //если не было элементов то добавляю
+		return;
+	}
+	while (memory != nullptr)
+	{
+		pre_el = memory; //иду до того момента пока не выйду из очереди или не найду элемент который уже есть
+		memory = memory->next;
+	}
+	memory = pointer;
+	pre_el->next = memory;//если вышел то добавляю элемент в очередь
+	return;
+}
+void remove1(queue_elem** start)
+{
+	queue_elem* memory = *start;
+	if ((*start)->next == nullptr) 
+	{ //если единственный элемент то его не удаляю
+		return;
+	}
+	while (memory->next->next != nullptr)//иду до предпоследнего
+	{
+		memory = memory->next;
+	}
+	free(memory->next);//удаляю последний
+	memory->next = nullptr;
+}
+int length_of_q(queue_elem* start)
+{
+	queue_elem* memory = start;
+	int len = 0;
+	while (start)
+	{
+		len++;//иду до конца считаю количество членов в очереди
+		start = start->next;
+	}
+	clean(memory);
+	return len;
+}
+void clean(queue_elem* start)
+{
+	queue_elem* memory = start;
+	while (start)
+	{
+		memory = start;
+		start = start->next; //после нахождения пути чищу очередь целиком
+		free(memory);
+	}
+}

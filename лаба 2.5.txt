@@ -1,0 +1,121 @@
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <locale.h> 
+#include <windows.h>
+typedef struct stackNode
+{
+	char Data;
+	stackNode *next;
+}stackNodePtr;
+typedef struct stackNode1
+{
+	char info;
+	stackNode1 *next1;
+}stackNodePtr1;
+int menu();
+void push(char elem);
+void print();
+stackNodePtr* top = NULL;
+stackNodePtr1* top1 = NULL;
+int main()
+{
+	system("chcp 1251>0");
+	char elem;
+	int kol, f = 0;
+	printf("Размер стека:");
+	scanf_s("%d", &kol);
+	while (1)
+	{
+		switch (menu())
+		{
+		case 1:
+		{
+			system("cls");
+			if (f == kol)
+			{
+				printf("Стек полон!\n");
+				break;
+			}
+			do
+			{
+				printf("Введите символ:");
+				scanf_s("\n%c", &elem);
+				push(elem);
+				f++;
+			}while (f < kol);
+			break;
+		}
+		case 2:
+		{
+			system("cls");
+			print();
+			break;
+		}
+		case 3:
+		{
+			return 0;
+		}
+		}
+	}
+}
+int menu()
+{
+	int x;
+	printf("1-Добавить элемены\n");
+	printf("2-Вывод стека\n");
+	printf("3-Завершение работы\n");
+	scanf_s("%d", &x);
+	return x;
+}
+void push(char elem)
+{
+	stackNodePtr* k;
+	stackNodePtr1* t;
+	k = (stackNodePtr*)malloc(sizeof(stackNodePtr));
+	t = (stackNodePtr1*)malloc(sizeof(stackNodePtr1));
+	if (islower(elem))
+	{
+		k->Data = elem;
+		k->next = top;
+		top = k;
+		printf("Строчная буква!\n");
+	}
+	if (isupper(elem))
+	{
+		t->info = elem;
+		t->next1 = top1;
+		top1 = t;
+		printf("Заглавная буква!\n");
+	}
+}
+void print()
+{
+	stackNodePtr* k = top;
+	stackNodePtr1* t = top1;
+	if (k == NULL)
+	{
+		printf("Стек 1 пуст\n");
+	}
+	else
+	{
+		printf("Cтек 1:\n");
+	}
+	do
+	{
+		printf("%c\n", k->Data);
+		k = k->next;
+	} while (k != NULL);
+	if (t == NULL)
+	{
+		printf("Стек 2 пуст\n");
+	}
+	else
+	{
+		printf("Стек 2:\n");
+	}
+	do
+	{
+		printf("%c\n", t->info);
+		t = t->next1;
+	} while (t != NULL);
+}
